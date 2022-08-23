@@ -15,7 +15,9 @@ export function loopWheelZero() {
 export function loopWheelFive() {
   return {type: types.LOOP_FIVE}
 }
-export function selectAnswer() { }
+export function selectAnswer(answer) { 
+  return {type: types.SET_SELECTED_ANSWER, payload: answer}
+}
 
 export function setMessage() { }
 
@@ -44,8 +46,16 @@ export function fetchQuiz() {
     // - Dispatch an action to send the obtained quiz to its state
   }
 }
-export function postAnswer() {
+export function postAnswer(answer_id, quiz_id) {
   return function (dispatch) {
+    axios.post(URL + 'answer', { quiz_id: quiz_id, answer_id: answer_id })
+      .then(res => {
+        dispatch({type: types.SET_INFO_MESSAGE, payload: res.data.message})
+      })
+      .catch(err => {
+        debugger
+        console.log(err)
+      })
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
