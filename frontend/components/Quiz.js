@@ -3,9 +3,12 @@ import { connect } from 'react-redux'
 import * as actions from '../state/action-creators'
 
 function Quiz(props) {
-  console.log(props)
+  const reset = () => {
+    props.setMessage()
+  }
+
   useEffect(() => {
-    props.fetchQuiz()
+    props.fetchQuiz(reset)
   }, [])
 
   const [answer1, setAnswer1] = useState(null) 
@@ -28,10 +31,10 @@ function Quiz(props) {
       return null
     } else if(answer1 === true) {
       props.postAnswer(props.quiz.answers[0].answer_id, quizid)
-      props.fetchQuiz()
+      props.fetchQuiz(reset)
     } else {
       props.postAnswer(props.quiz.answers[1].answer_id, quizid)
-      props.fetchQuiz()
+      props.fetchQuiz(reset)
     }
     // answer1 === true ? props.postAnswer(answer1) : 
   }
@@ -61,7 +64,6 @@ function Quiz(props) {
                 </button>
               </div>
             </div>
-
             <button id="submitAnswerBtn" onClick={() => submitAnswer()} disabled={answer1 === null || answer2 === null ? true : false}>Submit answer</button>
           </>
         ) : 'Loading next quiz...'

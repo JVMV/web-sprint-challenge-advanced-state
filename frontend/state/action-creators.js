@@ -19,7 +19,9 @@ export function selectAnswer(answer) {
   return {type: types.SET_SELECTED_ANSWER, payload: answer}
 }
 
-export function setMessage() { }
+export function setMessage() { 
+  return {type: types.RESET_MESSAGE}
+}
 
 export function setQuiz(quizData) { 
   return {type: types.SET_QUIZ_INTO_STATE, payload: quizData}
@@ -29,19 +31,22 @@ export function inputChange(name, value) {
   return {type: types.INPUT_CHANGE, payload: { name, value }}
 }
 
-export function resetForm() { }
+export function resetForm() { 
+  return {type: types.RESET_FORM}
+}
 
 // ❗ Async action creators
 const URL = 'http://localhost:9000/api/quiz/'
 
-export function fetchQuiz() {
+export function fetchQuiz(reset) {
   return function (dispatch) {
     axios.get(URL + 'next')
       .then(res => {
         dispatch(setQuiz(res.data))
+        // reset() {/*Resets infoMessage back to an empty string before next quiz loads*/}
       })
       .catch(err => {
-        console.log(err)
+        dispatch({type: types.SET_INFO_MESSAGE, payload: err.message})
       })
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
     // On successful GET:
@@ -56,7 +61,7 @@ export function postAnswer(answer_id, quiz_id) {
       })
       .catch(err => {
         debugger
-        console.log(err)
+        dispatch({type: types.SET_INFO_MESSAGE, payload: err.message})
       })
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
@@ -64,7 +69,7 @@ export function postAnswer(answer_id, quiz_id) {
     // - Dispatch the fetching of the next quiz
   }
 }
-export function postQuiz(question, tAnswer, fAnswer) {
+export function postQuiz(question, tAnswer, fAnswer, reset) {
   return function (dispatch) {
     const formData = {
       question_text: question, 
@@ -73,10 +78,12 @@ export function postQuiz(question, tAnswer, fAnswer) {
     }
     axios.post(URL + 'new', formData)
       .then(res => {
-        dispatch({type: types.SET_INFO_MESSAGE, payload: res.data.statusText})
+        const successMessage = `Congrats: "${res.data.question}" is a great question!`
+        dispatch({type: types.SET_INFO_MESSAGE, payload: successMessage})
+        reset()
+      })
       .catch(err => {
         console.log(err)
-      })
       })
     // On successful POST:
     // - Dispatch the correct message to the the appropriate state
