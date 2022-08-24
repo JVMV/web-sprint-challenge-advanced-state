@@ -9,6 +9,7 @@ function Quiz(props) {
 
   useEffect(() => {
     props.fetchQuiz(reset)
+    props.setMessage()
   }, [])
 
   const [answer1, setAnswer1] = useState(null) 

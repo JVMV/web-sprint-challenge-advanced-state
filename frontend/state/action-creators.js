@@ -20,7 +20,8 @@ export function selectAnswer(answer) {
 }
 
 export function setMessage() { 
-  return {type: types.RESET_MESSAGE}
+  // return {type: types.RESET_MESSAGE}
+  return {type: types.SET_INFO_MESSAGE, payload: 'That was the correct answer'}
 }
 
 export function setQuiz(quizData) { 
