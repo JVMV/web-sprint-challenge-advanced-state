@@ -55,6 +55,9 @@ const initialFormState = {
 }
 function form(state = initialFormState, action) {
   switch(action.type) {
+    case types.INPUT_CHANGE:
+      const { name, value } = action.payload
+      return { ...state, [name]: value }
     default:
     return state
   }

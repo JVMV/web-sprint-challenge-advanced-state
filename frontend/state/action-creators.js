@@ -25,7 +25,9 @@ export function setQuiz(quizData) {
   return {type: types.SET_QUIZ_INTO_STATE, payload: quizData}
 }
 
-export function inputChange() { }
+export function inputChange(name, value) { 
+  return {type: types.INPUT_CHANGE, payload: { name, value }}
+}
 
 export function resetForm() { }
 
@@ -62,11 +64,26 @@ export function postAnswer(answer_id, quiz_id) {
     // - Dispatch the fetching of the next quiz
   }
 }
-export function postQuiz() {
+export function postQuiz(question, tAnswer, fAnswer) {
   return function (dispatch) {
+    const formData = {
+      question_text: question, 
+      true_answer_text: tAnswer, 
+      false_answer_text: fAnswer 
+    }
+    axios.post(URL + 'new', formData)
+      .then(res => {
+        dispatch({type: types.SET_INFO_MESSAGE, payload: res.data.statusText})
+      .catch(err => {
+        console.log(err)
+      })
+      })
     // On successful POST:
     // - Dispatch the correct message to the the appropriate state
     // - Dispatch the resetting of the form
   }
 }
 // ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
+
+
+// res.data.statusText
